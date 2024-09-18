@@ -1,7 +1,9 @@
 <<<<<<< HEAD
-# focus-fit
-The best dang timer app for your Study and Interval training needs
+<<<<<<< HEAD
+
 =======
+=======
+>>>>>>> 72b8e08e42241658f272125f2e1ebbdeb831463a
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -72,4 +74,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<<<<<<< HEAD
 >>>>>>> 72b8e08 (first commit, getting started)
+=======
+>>>>>>> 72b8e08e42241658f272125f2e1ebbdeb831463a
