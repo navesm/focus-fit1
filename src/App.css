@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+  background: linear-gradient(to right, rgb(73, 166, 182), rgb(185, 70, 107));
+   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-header {
+  
+}
+
+
