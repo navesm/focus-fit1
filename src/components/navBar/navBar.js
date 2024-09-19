@@ -1,7 +1,16 @@
+import './navBar.style.scss';
+
 function NavBar () {
-	<h1 className='app-title'>
-	  Focus Fit 
-	</h1>
+	return(
+	<nav className='navbar'>
+	<div className='logo'> FocusFit</div>
+		<ul className='nav-links'>
+			<li>Home</li>
+			<li>About</li>
+			<li>Origins</li>
+		</ul>
+	</nav>
+	);
 }
 
 export default NavBar;

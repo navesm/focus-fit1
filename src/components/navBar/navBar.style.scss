@@ -1,0 +1,27 @@
+.navbar {
+  display: flex;
+  justify-content: space-between; /* This puts space between the logo and the nav links */
+  align-items: center; /* Aligns items vertically */
+  padding: 0 20px; /* Optional: adds space around the content */
+  background-color: #333; /* Optional: background color for the navbar */
+  color: white; /* Optional: text color for the navbar */
+}
+
+.logo {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none; /* Remove bullet points */
+  display: flex; /* Align list items horizontally */
+  gap: 20px; /* Adds space between list items */
+}
+
+.nav-links li {
+  cursor: pointer; /* Optional: cursor changes to pointer on hover */
+}
+
+.nav-links li:hover {
+  text-decoration: underline; /* Optional: underline the links on hover */
+}

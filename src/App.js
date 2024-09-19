@@ -18,8 +18,8 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar/>
       <div>
+        <NavBar/>
         <ModeSwitcher setMode={setMode}/>
         <Timer mode={mode} duration={durations[mode]}/>
         <Settings mode={mode} pomodoroDuration={durations.pomodoro / 60} tabataDuration={durations.tabata / 60} setDurations={setTimerDuration}/>

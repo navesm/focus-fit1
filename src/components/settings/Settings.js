@@ -4,12 +4,14 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, setDurations}) {
 	return (
 		<div> 
 		  <h3>Customize Timers</h3>
+		  {/*//if mode equals pomodor, use the pomodor default and set time*/}
 		  {mode === 'pomodoro' ? (
 		  	<input 
 		  	  type="number" 
 		  	  value={pomodoroDuration} 
 		  	  onChange={(e) => setDurations('pomodoro', e.target.value)}
 		  	/>
+		  // else use the tabata duration default and/or set time
 		  ) : (
 		  	<input 
 		  	  type="number" 
