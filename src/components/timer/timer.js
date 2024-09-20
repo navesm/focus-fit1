@@ -1,28 +1,29 @@
 import  React, { useState, useEffect, useCallback } from 'react';
 
-function Timer ({mode, duration}) {
-	const [timeLeft, setTimeLeft] = useState(duration);
+function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds}) {
+	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
 	const [isRunning, setIsRunning] = useState(false);
+	const [isBreak, setIsBreak] = useState(false);
+	const [currentRound, setCurrentRound] = useState(1);
+	const [delayBreakStart, setDelayBreakStart] = useState(false); //For lining up beep with break start
 
 
 	  // Memoize playBeep with useCallback to prevent it from being recreated on every render
   const playBeep = useCallback(() => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)(); // Moved inside useCallback
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine'; 
     oscillator.frequency.setValueAtTime(440, audioContext.currentTime); 
     oscillator.connect(audioContext.destination); 
     oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.5); // Beep for 0.5 seconds
+    oscillator.stop(audioContext.currentTime + 0.75); // Beep for 0.5 seconds
   }, []); // No dependencies, playBeep will always remain the same
 
   
-    // TODO : mode is set to tabata, change default timer
-
     
     // Calculate minutes and seconds from timeLeft
-    let minutesOutput = Math.floor(timeLeft / 60);
-    let secondsOutput = timeLeft % 60;
+    let minutesOutput = Math.floor(timeLeft / 60 || 0);
+    let secondsOutput = timeLeft % 60 || 0;
 
     // Start/Pause button handler
     const startClickHandler = () => {
@@ -32,31 +33,85 @@ function Timer ({mode, duration}) {
     // Reset timer to initial duration
     const resetHandler = () => {
     	setIsRunning(false);
-    	setTimeLeft(duration);
+    	setIsBreak(false);
+    	setTimeLeft(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
+    	setCurrentRound(1);
     }
 
     // Countdown logic using useEffect to handle side effects
     useEffect(() => {
-    	let timer;
+    	let timer = null;
 
     	//Only start the timer if isRunning is true
     	if (isRunning && timeLeft > 0) {
     		timer = setTimeout(() => {
     			setTimeLeft(prev => prev - 1) //Update timeLeft by decrementing 1 second
     		}, 1000);
-    	} else if (timeLeft === 0) {
+    	} 
+
+    	if (timeLeft === 0) {
     		playBeep(); //Play the beep when the timer reaches 0
-    		setIsRunning(false); // Stop the timer when time runs out
+    		
+    		if (mode === 'pomodoro'){
+	    		if (isBreak) {
+	    		  setIsRunning(false); // Stop the timer when time runs out
+	            } else {
+
+	            	//Start break after delay
+	            	setDelayBreakStart(true); //Activate one-second delay
+	            	setTimeout(() => {
+	            	  //Switch to break timer when main timer finishes
+	            	  setIsBreak(true);
+	                  setTimeLeft(pomodoroBreak * 60); // Start break with specified time
+	                  setDelayBreakStart(false); //End delay
+	            	}, 1000) // 1 second delay before break starts
+	            }
+    	    } else {
+    	    	// Tabata mode: Switch between work and break, and count rounds
+    	    	if (isBreak) {
+    	    		if(currentRound < totalRounds) {
+    	    			//Continue to the next round
+    	    			setIsBreak(false);
+    	    			setTimeLeft(tabataDuration);
+    	    			setCurrentRound((prevRound) => prevRound + 1);
+    	    		} else {
+    	    			//Finish all rounds
+    	    			setIsRunning(false);
+    	    			setCurrentRound(1); //Reset rounds
+    	    		}
+    	    	} else {
+    	    		setDelayBreakStart(true);
+    	    		setTimeout(() => {
+    	    			setIsBreak(true);
+    	    			setTimeLeft(tabataBreak);
+    	    			setDelayBreakStart(false);
+    	    		}, 1000); // 1 second delay before break starts to line up beep sound
+    	    	}
+    	    }
     	}
 
-    	//Cleanup interval on unmount or when isRunning changes
+    	//Cleanup timeout on unmount or when isRunning changes
     	return () => clearTimeout(timer);
-    }, [isRunning, timeLeft, playBeep]);
+    }, [isRunning, timeLeft, isBreak, delayBreakStart, pomodoroBreak, tabataBreak, playBeep, mode, currentRound, totalRounds, tabataDuration]);
+
+    //Reset timer when mode changes or when manually reset
+    useEffect(() => {
+    	setIsBreak(false);
+    	setTimeLeft(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
+    	setCurrentRound(1);
+    }, [mode, pomodoroDuration, tabataDuration]);
 
 	return (
 		<div>
-			<h2> {mode === 'pomodoro' ? 'Study Time' : 'Exercise Time'} </h2>
-			<div> { `${minutesOutput}:${secondsOutput < 10 ? '0': ''}${secondsOutput}`}</div>
+			<h2> {mode === 'pomodoro' 
+			        ? isBreak ? 'Break Time' : 'Study Time' 
+			        : isBreak ? 'Break Time' : `Exercise Time - Round ${currentRound} of ${totalRounds}`} </h2>
+			<div> 
+			{ mode === 'pomodoro' 
+			  ? `${String(minutesOutput).padStart(2,'0')}:${String(secondsOutput).padStart(2,'0')}`
+			  : `${timeLeft} seconds`
+			}
+			</div>
 			<button 
 			    onClick={ () => {
 			        startClickHandler();
