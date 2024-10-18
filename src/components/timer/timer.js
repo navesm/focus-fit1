@@ -1,5 +1,7 @@
 import  React, { useState, useEffect, useCallback } from 'react';
 
+import './timer.styles.scss';
+
 function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds}) {
 	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
 	const [isRunning, setIsRunning] = useState(false);
@@ -102,8 +104,8 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     }, [mode, pomodoroDuration, tabataDuration]);
 
 	return (
-		<div>
-			<h2> {mode === 'pomodoro' 
+		<div className="button-container">
+			<h2 className="title"> {mode === 'pomodoro' 
 			        ? isBreak ? 'Break Time' : 'Study Time' 
 			        : isBreak ? 'Break Time' : `Exercise Time - Round ${currentRound} of ${totalRounds}`} </h2>
 			<div> 
@@ -112,13 +114,14 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 			  : `${timeLeft} seconds`
 			}
 			</div>
-			<button 
+			<button
+			    className="start-button" 
 			    onClick={ () => {
 			        startClickHandler();
 			    }}>
 			    {isRunning ? 'Pause' : 'Start'} 
 			</button>
-			<button onClick={resetHandler}> Reset </button>
+			<button className="reset-button" onClick={resetHandler}> Reset </button>
 		</div>
 		)
 

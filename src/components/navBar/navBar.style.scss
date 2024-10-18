@@ -2,14 +2,18 @@
   display: flex;
   justify-content: space-between; /* This puts space between the logo and the nav links */
   align-items: center; /* Aligns items vertically */
-  padding: 0 20px; /* Optional: adds space around the content */
-  background-color: #333; /* Optional: background color for the navbar */
-  color: white; /* Optional: text color for the navbar */
+  padding: 0 20px; /* Adds space around the content */
+  background-color: lightsteelblue; /* Background color for the navbar */
+  color: white; /* text color for the navbar */
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+
 
 .logo {
   font-size: 1.5em;
   font-weight: bold;
+  color: rebeccapurple;
 }
 
 .nav-links {
@@ -18,10 +22,14 @@
   gap: 20px; /* Adds space between list items */
 }
 
+.nav-links .link {
+  color: rebeccapurple;
+}
+
 .nav-links li {
-  cursor: pointer; /* Optional: cursor changes to pointer on hover */
+  cursor: pointer; 
 }
 
 .nav-links li:hover {
-  text-decoration: underline; /* Optional: underline the links on hover */
+  text-decoration: underline; /* underline the links on hover */
 }
