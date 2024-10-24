@@ -68,6 +68,7 @@ function App() {
             }
             />
             <Route path="/about" element={<About/>}/>
+            <Route path="/origins" element={<Origins/>}/>
             <Route path="/sign-in" element=""/>
 
             <Route path="/sign-up" element=""/>

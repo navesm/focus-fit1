@@ -46,7 +46,7 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, breakDuration, setD
 		      value={breakDuration}
 		      onChange={(e) => setDurations('break', e.target.value)}
 		      min="0"
-		      placeholder="5"
+		      defaultValue={mode==='pomodoro'? "5" : "10"}
 		    />
 		  </div>
 		</div>
