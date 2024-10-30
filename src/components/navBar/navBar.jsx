@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import './navBar.style.scss';
 
-function NavBar () {
+function NavBar ({user, onSignOut}) {
 	return(
 	<nav className='navbar'>
 	<div className='logo'> FocusFit</div>
@@ -16,12 +16,25 @@ function NavBar () {
 			<li>
 			   <Link className="link" to="/origins">Origins</Link>
 			</li>
+			{ user ? (
+			<>
+				<Link className="link" to="/dashboard"> Welcome, {user.displayName} </Link>
+				<button onClick={onSignOut}> Sign Out </button>
+			</>
+
+			) : (
+			<>
 			<li>
 			   <Link className="link" to="/sign-in">Sign In</Link>
 			</li>
 			<li>
 			   <Link className="link" to="/sign-up">Sign Up</Link>
 			</li>
+			</>
+
+			) 
+
+			}
 		</ul>
 	</nav>
 	);

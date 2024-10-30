@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 import ModeSwitcher from './components/modeSwitcher/modeSwitcher.js';
 import Timer from './components/timer/timer.js';
 import Settings from './components/settings/Settings.js';
-import NavBar from './components/navBar/navBar.js';
+import NavBar from './components/navBar/navBar.jsx';
 import About from './components/about/About.jsx';
 import Origins from './components/origins/Origins.jsx';
 import SignUp from './components/signUp/SignUp.jsx';
 import SignIn from './components/signIn/SignIn.jsx';
+import Dashboard from './components/dashboard/Dashboard.jsx';
 
 import './App.css';
 
@@ -19,6 +21,7 @@ function App() {
   const [pomodoroBreak, setPomodoroBreak] = useState(5); //Default pomodoro break in minutes;
   const [tabataBreak, setTabataBreak] = useState(10); //Default tabata break in seconds
   const [totalRounds, setTotalRounds] = useState(10); // 10 rounds by default
+  const [user, setUser] = useState(null);
 
   //Funcntion to update durations
   const setDurations = (type, value) => {
@@ -33,11 +36,36 @@ function App() {
     }
   };
 
+useEffect(() => {
+  const fetchUser = async() => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user ? { displayName: user.display_name }: null);
+  };
+
+  fetchUser();
+
+  //Listen for auth state changes
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    setUser(session?.user ? { displayName: session.user.display_name } : null);
+  });
+
+  return () => subscription.unsubscribe();
+}, []);
+
+
+const handleSignOut = async () => {
+  await supabase.auth.signOut();
+  setUser(null);
+};
 
   return (
     <Router>
     <div className="App">
-      <NavBar className='NavBar'/>
+      <NavBar 
+         className='NavBar'
+         user={user}
+         onSignOut={handleSignOut}
+         />
       <div className="container">
         <Routes>
           <Route
@@ -69,9 +97,9 @@ function App() {
             />
             <Route path="/about" element={<About/>}/>
             <Route path="/origins" element={<Origins/>}/>
-            <Route path="/sign-in" element=""/>
-
-            <Route path="/sign-up" element=""/>
+            <Route path="/sign-in" element={<SignIn/>}/>
+            <Route path="/sign-up" element={<SignUp/>}/>
+            <Route path="/dashboard" element={<Dashboard user={user}/>} />
         </Routes>
       </div>
     </div>
