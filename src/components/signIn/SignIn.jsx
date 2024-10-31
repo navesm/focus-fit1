@@ -6,9 +6,14 @@ function SignIn () {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
+	const [message, setMessage] = useState('');
 	const navigate = useNavigate();
 
+
 	const handleSignIn = async (e) => {
+
+		e.preventDefault();
+		
 		const { data, error } = await supabase.auth.signInWithPassword({
 			email,
 			password,
@@ -17,7 +22,11 @@ function SignIn () {
 		if (error) {
 			setError(error.message);
 		} else {
-			navigate('/dashboard');
+			setMessage('Welcome!');
+			setTimeout(() => {
+				navigate('/dashboard');
+			}, 2000)
+			
 		}
 	};
 
@@ -40,6 +49,7 @@ function SignIn () {
 		  	/>
 		  	<button type="submit">Sign In</button>
 		  	{error && <p>{error}</p>}
+		  	{message && <p>{message}</p>}
 		  </form>		
 		</div>
 	);
