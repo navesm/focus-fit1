@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { supabase } from './supabaseClient';
-import ModeSwitcher from './components/modeSwitcher/modeSwitcher.js';
-import Timer from './components/timer/timer.js';
-import Settings from './components/settings/Settings.js';
+import ModeSwitcher from './components/modeSwitcher/modeSwitcher.jsx';
+import Timer from './components/timer/timer.jsx';
+import Settings from './components/settings/Settings.jsx';
 import NavBar from './components/navBar/navBar.jsx';
 import About from './components/about/About.jsx';
 import Origins from './components/origins/Origins.jsx';
@@ -22,6 +22,7 @@ function App() {
   const [tabataBreak, setTabataBreak] = useState(10); //Default tabata break in seconds
   const [totalRounds, setTotalRounds] = useState(10); // 10 rounds by default
   const [user, setUser] = useState(null);
+  const [userStats, setUserStats] = useState(null);
 
   //Funcntion to update durations
   const setDurations = (type, value) => {
@@ -36,17 +37,56 @@ function App() {
     }
   };
 
+
+
+  //Update user stats
+  const updateStat = async (field, increment = 1) => {
+    try {
+      //Fetch current value
+      const { data, error: fetchError } = await supabase
+        .from('user_stats')
+        .select(field)
+        .eq('uid', user.id)
+        .single();
+
+      if (fetchError) throw fetchError;
+      
+      //Increment value and update
+      const newValue = (data[field] || 0) + increment;
+      const { error: updateError } = await supabase
+        .from('user_stats')
+        .update({ [field]: newValue })
+        .eq('uid', user.id);
+
+      if (updateError) console.error("Error updating stat: ", updateError);
+    } catch (err) {
+      console.error("Update stat failed: ", err);
+    }
+  }
+
+
+
 useEffect(() => {
   const fetchUser = async() => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user ? { displayName: user.display_name }: null);
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error) {
+      console.error("Error fetching user:", error.message);
+    } else {
+      setUser(user ? { displayName: user.user_metadata?.display_name, id: user?.uid || null }: null);
+    }
   };
 
   fetchUser();
 
   //Listen for auth state changes
   const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-    setUser(session?.user ? { displayName: session.user.display_name } : null);
+    if (session?.user) {
+      setUser({ displayName: session.user.user_metadata?.display_name || "Guest", id: session.user.id });
+    } else {
+      setUser(null);
+    }
+    
   });
 
   return () => subscription.unsubscribe();
@@ -97,9 +137,9 @@ const handleSignOut = async () => {
             />
             <Route path="/about" element={<About/>}/>
             <Route path="/origins" element={<Origins/>}/>
-            <Route path="/sign-in" element={<SignIn/>}/>
+            <Route path="/sign-in" element={<SignIn updateStat={updateStat}/>}/>
             <Route path="/sign-up" element={<SignUp/>}/>
-            <Route path="/dashboard" element={<Dashboard user={user}/>} />
+            <Route path="/dashboard" element={user && <Dashboard user={user} updateStat={updateStat}/>} />
         </Routes>
       </div>
     </div>

@@ -25,10 +25,27 @@ function SignUp() {
 		if (error) {
 			setError(error.message);
 		} else if (data.user) {
-			setMessage('Sign-up successful! Redirecting to dashboard...');
+			const userId = data.user.id;
+
+			//Automatically insert initial user stats for the new user
+			const { error: statsError } = await supabase
+			  .from('user_stats')
+			  .insert({
+			  	  uid: userId,
+			  	  login_count: 1,
+			  	  pomodoro_count: 0,
+			  	  tabata_count: 0,
+			  	  round_count: 0,
+			  });
+
+			if (statsError) {
+				setError(statsError.message);
+			} else {
+				setMessage('Sign-up successful! Redirecting to dashboard...');
 			setTimeout(() => {
 				navigate('/dashboard');
-			}, 2000);
+			  }, 2000);
+			}	
 		}
 	};
 

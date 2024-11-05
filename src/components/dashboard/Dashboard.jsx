@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 
-function Dashboard ({ user }) {
+function Dashboard ({ user, updateStat }) {
 	const [userStats, setUserStats] = useState(null);
 	const [error, setError] = useState(null);
 
@@ -14,21 +14,23 @@ function Dashboard ({ user }) {
 					.eq('uid', user.id)
 					.single();
 
+  
+
 				if (error) {
 					setError(error.message);
 				} else {
 					setUserStats(data);
+					
 				}
-			};
-			fetchUserStats();
-		}
-	}, [user]);
-
-	
+			}
+		};
+		fetchUserStats();
+	}, [user, userStats]);
 
 	return (
 		<div>
-		  <h1>Welcome to your Dashboard, {user.display_name || 'User'}!</h1>
+
+		  <h1>Welcome to your Dashboard, {user.displayName || 'User'}!</h1>
 		  {error && <p>Error loading stats: {error}</p>}
 		  {userStats ? (
 		  	<div>
@@ -36,6 +38,7 @@ function Dashboard ({ user }) {
 			  <p>Completed {userStats.tabata_count} Tabata workouts</p>
 			  <p>And {userStats.tabata_count} Tabata rounds</p>
 			  <p>Completed {userStats.pomodoro_count} Pomodoros</p>
+			  <button onClick={() => updateStat('pomodoro_count')}>Update Stat</button>
 		  	</div>
 		  ) : (
 		    <p>Loading your stats...</p>

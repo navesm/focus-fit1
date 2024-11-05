@@ -18,8 +18,10 @@ function NavBar ({user, onSignOut}) {
 			</li>
 			{ user ? (
 			<>
-				<Link className="link" to="/dashboard"> Welcome, {user.displayName} </Link>
-				<button onClick={onSignOut}> Sign Out </button>
+				<Link className="link" to="/dashboard"> {user.displayName}'s Dashboard </Link>
+				<Link  to='/sign-in'>
+				<button className="signout" onClick={onSignOut}> Sign Out </button>
+				</Link>
 			</>
 
 			) : (
