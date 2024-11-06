@@ -2,7 +2,7 @@ import  React, { useState, useEffect, useCallback } from 'react';
 
 import './timer.styles.scss';
 
-function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds}) {
+function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds, updateStat}) {
 	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
 	const [isRunning, setIsRunning] = useState(false);
 	const [isBreak, setIsBreak] = useState(false);
@@ -55,6 +55,7 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     		playBeep(); //Play the beep when the timer reaches 0
     		
     		if (mode === 'pomodoro'){
+    			updateStat('pomodoro_count');
 	    		if (isBreak) {
 	    		  setIsRunning(false); // Stop the timer when time runs out
 	            } else {
@@ -76,10 +77,13 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     	    			setIsBreak(false);
     	    			setTimeLeft(tabataDuration);
     	    			setCurrentRound((prevRound) => prevRound + 1);
+    	    			updateStat('round_count');
     	    		} else {
     	    			//Finish all rounds
     	    			setIsRunning(false);
     	    			setCurrentRound(1); //Reset rounds
+    	    			updateStat('tabata_count');
+    	    			updateStat('round_count');
     	    		}
     	    	} else {
     	    		setDelayBreakStart(true);
@@ -94,7 +98,7 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 
     	//Cleanup timeout on unmount or when isRunning changes
     	return () => clearTimeout(timer);
-    }, [isRunning, timeLeft, isBreak, delayBreakStart, pomodoroBreak, tabataBreak, playBeep, mode, currentRound, totalRounds, tabataDuration]);
+    }, [isRunning, timeLeft, isBreak, delayBreakStart, pomodoroBreak, tabataBreak, playBeep, mode, currentRound, totalRounds, tabataDuration, updateStat]);
 
     //Reset timer when mode changes or when manually reset
     useEffect(() => {

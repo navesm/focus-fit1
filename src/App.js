@@ -22,7 +22,6 @@ function App() {
   const [tabataBreak, setTabataBreak] = useState(10); //Default tabata break in seconds
   const [totalRounds, setTotalRounds] = useState(10); // 10 rounds by default
   const [user, setUser] = useState(null);
-  const [userStats, setUserStats] = useState(null);
 
   //Funcntion to update durations
   const setDurations = (type, value) => {
@@ -74,6 +73,10 @@ useEffect(() => {
       console.error("Error fetching user:", error.message);
     } else {
       setUser(user ? { displayName: user.user_metadata?.display_name, id: user?.uid || null }: null);
+      if (user) {
+        await updateStat('login_count');
+      }
+     
     }
   };
 
@@ -121,6 +124,7 @@ const handleSignOut = async () => {
               tabataBreak={tabataBreak}
               totalRounds={totalRounds}
               className="timer-container"
+              updateStat={updateStat}
             />
             <Settings 
               mode={mode} 
@@ -137,7 +141,7 @@ const handleSignOut = async () => {
             />
             <Route path="/about" element={<About/>}/>
             <Route path="/origins" element={<Origins/>}/>
-            <Route path="/sign-in" element={<SignIn updateStat={updateStat}/>}/>
+            <Route path="/sign-in" element={<SignIn user={user}updateStat={updateStat}/>}/>
             <Route path="/sign-up" element={<SignUp/>}/>
             <Route path="/dashboard" element={user && <Dashboard user={user} updateStat={updateStat}/>} />
         </Routes>

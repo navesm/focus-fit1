@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
-function SignIn ({updateStat}) {
+function SignIn ({user, updateStat}) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
@@ -22,11 +22,15 @@ function SignIn ({updateStat}) {
 		if (error) {
 			setError(error.message);
 		} else {
+			console.log(data);
 			setMessage('Welcome!');
 			setTimeout(() => {
 				navigate('/dashboard');
 			}, 2000)
 		}
+		
+		
+		
 
 	};
 

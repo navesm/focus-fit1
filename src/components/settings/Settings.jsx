@@ -1,6 +1,6 @@
 import './Settings.style.scss';
 
-function Settings ({ mode, pomodoroDuration, tabataDuration, breakDuration, setDurations, totalRounds, setTotalRounds}) {
+function Settings ({ mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, setDurations, totalRounds, setTotalRounds}) {
 	// Inputs to adjust the time settings
 
 	return (
@@ -43,8 +43,8 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, breakDuration, setD
 		    <label>Break Duration ({mode === 'pomodoro' ? 'minutes' : 'seconds'})</label>
 		    <input
 		      type='number'
-		      value={breakDuration}
-		      onChange={(e) => setDurations('break', e.target.value)}
+		      value={mode==='pomodoro' ? pomodoroBreak : tabataBreak}
+		      onChange={(e) => setDurations(mode === 'pomodoro' ? 'pomodoroBreak' : 'tabataBreak' , e.target.value)}
 		      min="0"
 		      defaultValue={mode==='pomodoro'? "5" : "10"}
 		    />

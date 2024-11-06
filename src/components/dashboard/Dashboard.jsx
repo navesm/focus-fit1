@@ -36,9 +36,9 @@ function Dashboard ({ user, updateStat }) {
 		  	<div>
 			  <p>Logged in {userStats.login_count} times</p>
 			  <p>Completed {userStats.tabata_count} Tabata workouts</p>
-			  <p>And {userStats.tabata_count} Tabata rounds</p>
+			  <p>And {userStats.round_count} Tabata rounds</p>
 			  <p>Completed {userStats.pomodoro_count} Pomodoros</p>
-			  <button onClick={() => updateStat('pomodoro_count')}>Update Stat</button>
+			  <button onClick={() => updateStat('login_count')}>Update Stat</button>
 		  	</div>
 		  ) : (
 		    <p>Loading your stats...</p>
