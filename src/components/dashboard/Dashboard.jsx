@@ -34,11 +34,11 @@ function Dashboard ({ user, updateStat }) {
 		  {error && <p>Error loading stats: {error}</p>}
 		  {userStats ? (
 		  	<div>
-			  <p>Logged in {userStats.login_count} times</p>
 			  <p>Completed {userStats.tabata_count} Tabata workouts</p>
 			  <p>And {userStats.round_count} Tabata rounds</p>
 			  <p>Completed {userStats.pomodoro_count} Pomodoros</p>
-			  <button onClick={() => updateStat('login_count')}>Update Stat</button>
+			  			  <p>Smashed Goals {userStats.login_count} times</p>
+			  <button className='reset-button' onClick={() => updateStat('login_count')}>Smashed Goal? Press Here</button>
 		  	</div>
 		  ) : (
 		    <p>Loading your stats...</p>

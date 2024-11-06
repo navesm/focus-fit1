@@ -52,6 +52,7 @@ function App() {
       
       //Increment value and update
       const newValue = (data[field] || 0) + increment;
+
       const { error: updateError } = await supabase
         .from('user_stats')
         .update({ [field]: newValue })
@@ -72,18 +73,14 @@ useEffect(() => {
     if (error) {
       console.error("Error fetching user:", error.message);
     } else {
-      setUser(user ? { displayName: user.user_metadata?.display_name, id: user?.uid || null }: null);
-      if (user) {
-        await updateStat('login_count');
-      }
-     
+      setUser(user ? { displayName: user.user_metadata?.display_name, id: user?.uid || null }: null);     
     }
   };
 
   fetchUser();
 
   //Listen for auth state changes
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
       setUser({ displayName: session.user.user_metadata?.display_name || "Guest", id: session.user.id });
     } else {

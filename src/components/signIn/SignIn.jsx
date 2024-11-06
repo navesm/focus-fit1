@@ -14,7 +14,7 @@ function SignIn ({user, updateStat}) {
 
 		e.preventDefault();
 		
-		const { data, error } = await supabase.auth.signInWithPassword({
+		const { error } = await supabase.auth.signInWithPassword({
 			email,
 			password,
 		});
@@ -22,16 +22,11 @@ function SignIn ({user, updateStat}) {
 		if (error) {
 			setError(error.message);
 		} else {
-			console.log(data);
 			setMessage('Welcome!');
 			setTimeout(() => {
 				navigate('/dashboard');
 			}, 2000)
-		}
-		
-		
-		
-
+		}	
 	};
 
 
@@ -51,8 +46,8 @@ function SignIn ({user, updateStat}) {
 		  	  onChange={(e) => setPassword(e.target.value)}
 		  	  placeholder="Password"
 		  	/>
-		  	<button type="submit">Sign In</button>
-		  	{error && <p>{error}</p>}
+		  	<button className="start-button" type="submit">Sign In</button>
+		  	{error && <p>{error}<span></span></p>}
 		  	{message && <p>{message}</p>}
 		  </form>		
 		</div>
