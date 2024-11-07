@@ -64,7 +64,26 @@ top: 5px;
 
 @media (max-width: 600px) {
   .navbar {
-    padding: 10px;
+    padding: 0px;
+    flex-direction: column;
+    justyify-content: center;
+    top: 0;
+    width: 90vw;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1002;
   }
 
+  .logo{
+    font-size: 1.2em;
+  }
+
+  .nav-links {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .signout {
+    min-width: 90px;
+    height: 35px;
+  }
 }

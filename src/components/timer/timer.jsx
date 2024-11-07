@@ -1,6 +1,7 @@
-import  React, { useState, useEffect, useCallback, useRef } from 'react';
-
+import  React, { useState, useEffect, useCallback } from 'react';
 import './timer.styles.css';
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds, updateStat}) {
 	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
@@ -10,23 +11,19 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 	const [delayBreakStart, setDelayBreakStart] = useState(false); //For lining up beep with break start
 
 
-
-  const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
-
 	  // Memoize playBeep with useCallback to prevent it from being recreated on every render
   const playBeep = useCallback(() => {
-
     //Check if audio context is suspended and resume it if necesary
-    if (audioContextRef.state === 'suspended') {
-    	audioContextRef.resume();
+    if (audioContext.state === 'suspended') {
+    	audioContext.resume();
     }
 
-    const oscillator = audioContextRef.createOscillator();
+    const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine'; 
-    oscillator.frequency.setValueAtTime(440, audioContextRef.currentTime); 
-    oscillator.connect(audioContextRef.destination); 
+    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); 
+    oscillator.connect(audioContext.destination); 
     oscillator.start();
-    oscillator.stop(audioContextRef.currentTime + 0.75); // Beep for 0.5 seconds
+    oscillator.stop(audioContext.currentTime + 0.75); // Beep for 0.75 seconds
   }, []); // No dependencies, playBeep will always remain the same
 
   
