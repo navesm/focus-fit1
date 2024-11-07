@@ -13,6 +13,12 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 	  // Memoize playBeep with useCallback to prevent it from being recreated on every render
   const playBeep = useCallback(() => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    //Check if audio context is suspended and resume it if necesary
+    if (audioContext.state === 'suspended') {
+    	audioContext.resume();
+    }
+    
     const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine'; 
     oscillator.frequency.setValueAtTime(440, audioContext.currentTime); 
