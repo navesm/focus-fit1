@@ -1,4 +1,4 @@
-import './Settings.style.scss';
+import './Settings.style.css';
 
 function Settings ({ mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, setDurations, totalRounds, setTotalRounds}) {
 	// Inputs to adjust the time settings
@@ -13,7 +13,7 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, pomodoroBreak, taba
 			  	  type="number" 
 			  	  value={pomodoroDuration} 
 			  	  onChange={(e) => setDurations('pomodoro', e.target.value)}
-			  	  min="0"
+			  	  min="1"
 			  	/>
 		  	</div>
 		  // else use the tabata duration default and/or set time
@@ -25,7 +25,7 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, pomodoroBreak, taba
 				  	  type="number"
 				  	  value={totalRounds}
 				  	  onChange={(e) => setTotalRounds(e.target.value)}
-				  	  min="0"
+				  	  min="1"
 			     	/>
 		     	</div>
 		        <div>
@@ -34,7 +34,7 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, pomodoroBreak, taba
 				  	  type="number" 
 				  	  value={tabataDuration} 
 				  	  onChange={(e) => setDurations('tabata', e.target.value)} 
-				  	  min = "0"
+				  	  min = "1"
 				  	/>
 			  	</div>
 		    </div>

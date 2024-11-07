@@ -1,6 +1,6 @@
 import  React, { useState, useEffect, useCallback } from 'react';
 
-import './timer.styles.scss';
+import './timer.styles.css';
 
 function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds, updateStat}) {
 	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './modeSwitcher.styles.scss';
+import './modeSwitcher.styles.css';
 
 function ModeSwitcher ({ setMode }) {
 	return (

@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import './navBar.style.scss';
+import './navBar.style.css';
 
 function NavBar ({user, onSignOut}) {
 	return(
