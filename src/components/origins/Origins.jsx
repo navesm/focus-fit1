@@ -26,15 +26,10 @@ function Origins () {
 		   <h2>Tabata</h2>
 		   <p>
 		   	Tabata is a method for intense interval exercise, named after Dr. Izumi Tabata
-		   	and is traditionally 20 seconds of intense exercise with 10 seconds of rest for 8 rounds
-		   	comprising a four minute butt-kicking workout. There are a multitude of benefits, and the trade-off
-		   	for intensity and a short duration are really convenient, efficient, and continue to burn calories for 
-		   		much longer after the exercise than traditional cardio. Now, 20 seconds of giving your all 
-		   	and then only 10 seconds of rest, when done properly, can be, well, pretty intense. So, it's totally up to you
-		   	how much time and intensity you want to give it, because the timer can be used for any type of interval training. Say,
-		   	for instance, you want to do 6 minutes of all out ab training. Set the work timer for 60 seconds and the rest for 30 seconds
-		   		for 4 rounds, and ensuring you rest no more than 30 seconds, and I promise this is more difficult and more effective than it sounds.
-		   	But the Tabata method is definitely worth a try. If you want to read more about it, check out the link below.
+		   	and is traditionally 20 seconds of maximal-effort exercise with 10 seconds of rest for 8 rounds
+		   	comprising a four minute butt-kicking workout. I use the tabata method at times,
+		   	but the timer is also great for other forms of interval training that may be slightly less intense.
+		   	If If you want to read more about it, check out the link below.
 		   </p>
 		   <Link
 		     className="link"
