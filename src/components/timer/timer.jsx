@@ -1,7 +1,6 @@
-import  React, { useState, useEffect, useCallback } from 'react';
+import  React, { useState, useEffect, useCallback, useRef } from 'react';
 import './timer.styles.css';
 
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds, updateStat}) {
 	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
@@ -11,30 +10,73 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 	const [delayBreakStart, setDelayBreakStart] = useState(false); //For lining up beep with break start
 
 
-	  // Memoize playBeep with useCallback to prevent it from being recreated on every render
-  const playBeep = useCallback(() => {
-    //Check if audio context is suspended and resume it if necesary
-    if (audioContext.state === 'suspended') {
-    	audioContext.resume();
-    }
+  const audioContextRef = useRef(null);
 
-    const oscillator = audioContext.createOscillator();
-    oscillator.type = 'sine'; 
-    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); 
-    oscillator.connect(audioContext.destination); 
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.75); // Beep for 0.75 seconds
-  }, []); // No dependencies, playBeep will always remain the same
+  //Initialize audio context on first user interaction
+  const initializeAudio = useCallback(async () => {
+  	if (!audioContextRef.current) {
+  		audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+  	}
+
+  	// iOS requires resume on each user interaction
+  	if (audioContextRef.current.state === 'suspended') {
+  		try {
+  			await audioContextRef.current.resume();
+  		} catch(error) {
+  			console.error('Failed to resume audio context', error);
+  		}
+  	}
+  }, []);
+
+	  // Memoize playBeep with useCallback to prevent it from being recreated on every render
+  const playBeep = useCallback(async() => {
+    //Check if audio context is suspended and resume it if necesary
+    try {
+    	if (!audioContextRef.current) {
+    		await initializeAudio();
+    	}
+
+    	//Double-check context state
+    	if (audioContextRef.current.state === 'suspended') {
+    		await audioContextRef.current.resume();
+    	}
+
+    	const oscillator = audioContextRef.current.createOscillator();
+    	const gainNode = audioContextRef.current.createGain();
+
+    	oscillator.type = 'sine';
+    	oscillator.frequency.setValueAtTime(440, audioContextRef.current.currentTime);
+
+    	//Add gain node to control volume
+    	gainNode.gain.setValueAtTime(0.1, audioContextRef.current.currentTime);
+    	oscillator.connect(gainNode);
+    	gainNode.connect(audioContextRef.current.destination);
+
+    	oscillator.start();
+    	oscillator.stop(audioContextRef.current.currentTime + 0.75);
+
+    	//Cleanup
+    	setTimeout(() => {
+    		gainNode.disconnect();
+    	}, 750);
+    } catch (error) {
+    	console.error('Audio playback failed:', error);
+    }
+  },[initializeAudio]);
 
   
     
-    // Calculate minutes and seconds from timeLeft
-    let minutesOutput = Math.floor(timeLeft / 60 || 0);
-    let secondsOutput = timeLeft % 60 || 0;
+  
 
-    // Start/Pause button handler
-    const startClickHandler = () => {
-    	setIsRunning(!isRunning); // Toggle isRunning
+    // Start/Pause button handler with audio initialization
+    const startClickHandler = async () => {
+    	try {
+    		await initializeAudio(); //Initialize audio on start
+    		setIsRunning(!isRunning);
+    	} catch (error){
+    		console.error('Failed to initialize audio:', error);
+    		setIsRunning(!isRunning); // Toggle isRunning
+    	}
     }
 
     // Reset timer to initial duration
@@ -105,12 +147,27 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     	return () => clearTimeout(timer);
     }, [isRunning, timeLeft, isBreak, delayBreakStart, pomodoroBreak, tabataBreak, playBeep, mode, currentRound, totalRounds, tabataDuration, updateStat]);
 
+
+    //Cleanup effect for audio context
+    useEffect(() => {
+    	return () => {
+    		if (audioContextRef.current) {
+    			audioContextRef.current.close();
+    			audioContextRef.current=null;
+    		}
+    	};
+    }, []);
     //Reset timer when mode changes or when manually reset
     useEffect(() => {
     	setIsBreak(false);
     	setTimeLeft(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
     	setCurrentRound(1);
     }, [mode, pomodoroDuration, tabataDuration]);
+
+    // Calculate minutes and seconds from timeLeft
+    let minutesOutput = Math.floor(timeLeft / 60 || 0);
+    let secondsOutput = timeLeft % 60 || 0;
+
 
 	return (
 		<div className="button-container">
@@ -133,7 +190,6 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 			<button className="reset-button" onClick={resetHandler}> Reset </button>
 		</div>
 		)
-
 }
 
 export default Timer;
