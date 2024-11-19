@@ -25,16 +25,20 @@ function App() {
 
   //Funcntion to update durations
   const setDurations = (type, value) => {
+
+    const numericValue = Math.max(1, parseInt(value) || 1);
+
     if (type === 'pomodoro') {
-      setPomodoroDuration(Number(value));
+      setPomodoroDuration(Number(numericValue));
     } else if (type === 'tabata') {
-      setTabataDuration(Number(value));
+      setTabataDuration(Number(numericValue));
     } else if (type === 'pomodoroBreak') {
-      setPomodoroBreak(Number(value));
+      setPomodoroBreak(Number(numericValue));
     } else if (type === 'tabataBreak') {
-      setTabataBreak(Number(value));
+      setTabataBreak(Number(numericValue));
     }
   };
+
 
 
 
