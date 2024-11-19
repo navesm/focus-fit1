@@ -98,7 +98,7 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     		}, 1000);
     	} 
 
-    	if (timeLeft === 0) {
+    	if (timeLeft === 0 && isRunning) {
     		playBeep(); //Play the beep when the timer reaches 0
     		
     		if (mode === 'pomodoro'){
