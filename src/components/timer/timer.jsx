@@ -65,7 +65,7 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
   },[initializeAudio]);
 
   
-    
+
   
 
     // Start/Pause button handler with audio initialization
@@ -147,7 +147,14 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     	return () => clearTimeout(timer);
     }, [isRunning, timeLeft, isBreak, delayBreakStart, pomodoroBreak, tabataBreak, playBeep, mode, currentRound, totalRounds, tabataDuration, updateStat]);
 
-
+    // Keep timer running in the background if screen locks/ battery saver mode on Mobile
+    useEffect(() => {
+    	if (isRunning && audioContextRef.current) {
+    		if (audioContextRef.current.state === 'suspended') {
+    			audioContextRef.resume().catch(err => console.error('Error resuming AudioContext:', err));
+    		}
+    	}
+    }, [isRunning])
     //Cleanup effect for audio context
     useEffect(() => {
     	return () => {
