@@ -26,15 +26,14 @@ function App() {
   //Funcntion to update durations
   const setDurations = (type, value) => {
 
-
     if (type === 'pomodoro') {
-      setPomodoroDuration(Number(value));
+      setPomodoroDuration(value);
     } else if (type === 'tabata') {
-      setTabataDuration(Number(value));
+          setTabataDuration(value);
     } else if (type === 'pomodoroBreak') {
-      setPomodoroBreak(Number(value));
+      setPomodoroBreak(value);
     } else if (type === 'tabataBreak') {
-      setTabataBreak(Number(value));
+      setTabataBreak(value);
     }
   };
 

@@ -33,7 +33,10 @@ function Settings ({ mode, pomodoroDuration, tabataDuration, pomodoroBreak, taba
 				  	<input 
 				  	  type="number" 
 				  	  value={tabataDuration} 
-				  	  onChange={(e) => setDurations('tabata', e.target.value)} 
+				  	  onChange={(e) => {
+				  	  	const value = e.target.value === '' ? '' : String(Number(e.target.value));
+				  	  	setDurations('tabata', value);
+				  	  }} 
 				  	  min = "1"
 				  	/>
 			  	</div>
