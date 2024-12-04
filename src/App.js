@@ -22,6 +22,7 @@ function App() {
   const [tabataBreak, setTabataBreak] = useState(10); //Default tabata break in seconds
   const [totalRounds, setTotalRounds] = useState(10); // 10 rounds by default
   const [user, setUser] = useState(null);
+  const [wakeLockActive, setWakeLockActive] = useState(false);
 
   //Funcntion to update durations
   const setDurations = (type, value) => {
@@ -124,6 +125,8 @@ const handleSignOut = async () => {
               totalRounds={totalRounds}
               className="timer-container"
               updateStat={updateStat}
+              wakeLockActive={wakeLockActive}
+              setWakeLockActive={setWakeLockActive}
             />
             <Settings 
               mode={mode} 

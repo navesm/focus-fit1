@@ -2,7 +2,7 @@ import  React, { useState, useEffect, useCallback, useRef } from 'react';
 import './timer.styles.css';
 
 
-function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds, updateStat}) {
+function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBreak, totalRounds, updateStat, wakeLockActive, setWakeLockActive}) {
 	const [timeLeft, setTimeLeft] = useState(mode === 'pomodoro' ? pomodoroDuration * 60 : tabataDuration);
 	const [isRunning, setIsRunning] = useState(false);
 	const [isBreak, setIsBreak] = useState(false);
@@ -175,6 +175,43 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
     let minutesOutput = Math.floor(timeLeft / 60 || 0);
     let secondsOutput = timeLeft % 60 || 0;
 
+    useEffect(() => {
+    	let wakeLock = null;
+
+    	const requestWakeLock = async () => {
+    		try {
+    			if ('wakeLock' in navigator) {
+    				wakeLock = await navigator.wakeLock.request('screen');
+    				console.log("Wake Lock activated");
+    			}
+    		} catch (err) {
+    			console.error("Failed to acquire wake lock:", err);
+    		}
+    	};
+
+    	const releaseWakeLock = async () => {
+    		if (wakeLock) {
+    			try {
+    				await wakeLock.release();
+    				console.log("Wake Lock released");
+    				wakeLock = null;
+    			} catch (err) {
+    				console.error("Failed to release wake lock:", err);
+    			}
+    		}
+    	};
+
+    	if (wakeLockActive) {
+    		requestWakeLock();
+    	} else {
+    		releaseWakeLock();
+    	}
+
+    	return () => {
+    		releaseWakeLock();
+    	};
+    }, [wakeLockActive]);
+
 
 	return (
 		<div className="button-container">
@@ -195,6 +232,17 @@ function Timer ({mode, pomodoroDuration, tabataDuration, pomodoroBreak, tabataBr
 			    {isRunning ? 'Pause' : 'Start'} 
 			</button>
 			<button className="reset-button" onClick={resetHandler}> Reset </button>
+			<div className="wake-lock-toggle">
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={wakeLockActive}
+                  onChange={() => setWakeLockActive(!wakeLockActive)}
+                  />
+                  <span className="slider round"></span>
+              </label>
+              <span>Screen Active Lock</span>
+            </div>
 		</div>
 		)
 }
